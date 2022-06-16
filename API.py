@@ -1,12 +1,14 @@
 from pytube import YouTube
+import pytube 
 import os
 
 class API():
     def __init__(self):
-        pass 
+        self.youtube_objects = []
     
-    def download_video(self, urls):
-        pass 
-
-    def download_audio(self, urls):
-        pass
+    def get_video(self, url):
+        try:
+            video = YouTube(url)
+        except pytube.exceptions.VideoUnavailable:
+            return (1, url)
+        return (0, video)

@@ -1,19 +1,22 @@
 import tkinter as tk
 from tkinter import ttk
-
 from matplotlib import widgets
+from API import API
 
 class App(tk.Frame):
     def __init__(self):
         super(App, self).__init__()
         self.widgets = []
+        self.result_widgets = []
         self.grid()
         self.create_widgets()
         self.first_run = True 
+        self.api = API()
     
     def create_widgets(self):
-        self.url = tk.Entry(self, font = ('Courier New', 12), width = 50)
-        self.url.grid()
+        url = tk.Entry(self, font = ('Courier New', 12), width = 50)
+        url.grid()
+        self.widgets.append(url)
         self.download_video_button = tk.Button(self, text = 'Download Video', command = lambda : self.download('video'))
         self.download_video_button.grid(row = 0, column = 1)
         self.download_audio_button = tk.Button(self, text = 'Download Audio', command = lambda : self.download('audio'))
@@ -39,13 +42,25 @@ class App(tk.Frame):
             widget.destroy()
 
     def download(self, mode):
-        links = []
+        videos = []
         for widget in self.widgets:
-            links.append(widget)
+            url = widget.get()
+            print(url)
+            current_vid = self.api.get_video(url)
+            self.show_results(current_vid)
         self.clear_text()
+    
+    def show_results(self, current_vid):
+        if current_vid[0] == 0:
+            result = tk.Label(self, text = f'Found video {current_vid.title}')
+            result.grid()
+            self.result_widgets.append(result)
+        else:
+            result = tk.Label(self, text = f'Could not find video {current_vid[1]}')
+            result.grid()
+            self.result_widgets.append(result) 
 
     def clear_text(self):
-        self.url.delete(0, 'end')
         for widget in self.widgets:
             widget.delete(0, 'end')
         
