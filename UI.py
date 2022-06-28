@@ -52,11 +52,11 @@ class App(tk.Frame):
     
     def show_results(self, current_vid):
         if current_vid[0] == 0:
-            result = tk.Label(self, text = f'Found video {current_vid.title}')
+            result = tk.Label(self, text = f'Found video: {current_vid[1].title}')
             result.grid()
             self.result_widgets.append(result)
         else:
-            result = tk.Label(self, text = f'Could not find video {current_vid[1]}')
+            result = tk.Label(self, text = f'Could not find video: {current_vid[1]}')
             result.grid()
             self.result_widgets.append(result) 
 
