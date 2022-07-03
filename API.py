@@ -11,4 +11,6 @@ class API():
             video = YouTube(url)
         except pytube.exceptions.VideoUnavailable:
             return (1, url)
+        except pytube.exceptions.RegexMatchError:
+            return (1, url)
         return (0, video)

@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import filedialog
 from matplotlib import widgets
 from API import API
 
@@ -12,6 +13,7 @@ class App(tk.Frame):
         self.create_widgets()
         self.first_run = True 
         self.api = API()
+        self.download_destination = 'C:\\'
     
     def create_widgets(self):
         url = tk.Entry(self, font = ('Courier New', 12), width = 50)
@@ -21,13 +23,18 @@ class App(tk.Frame):
         self.download_video_button.grid(row = 0, column = 1)
         self.download_audio_button = tk.Button(self, text = 'Download Audio', command = lambda : self.download('audio'))
         self.download_audio_button.grid(row = 0, column = 2)
+        self.download_destination_button = tk.Button(self, text = 'Download Destination', command = lambda : self.download_destination())
+        self.download_destination_button.grid(row = 0, column = 3)
         self.clone_button = tk.Button(self, text='Add Download', command = lambda : self.clone())
-        self.clone_button.grid(row = 0, column = 3)
+        self.clone_button.grid(row = 0, column = 4)
+    
+    def download_destination(self):
+        self.download_destination = filedialog.askopenfilename()
     
     def clone(self):
         if self.first_run == True:
             self.remove_button = tk.Button(self, text = 'Remove Download', command = lambda : self.remove())
-            self.remove_button.grid(row = 0, column = 4)
+            self.remove_button.grid(row = 0, column = 5)
             self.first_run = False
         widget = tk.Entry(self, font = ('Courier New', 12), width = 50)
         widget.grid()
@@ -45,7 +52,6 @@ class App(tk.Frame):
         videos = []
         for widget in self.widgets:
             url = widget.get()
-            print(url)
             current_vid = self.api.get_video(url)
             self.show_results(current_vid)
         self.clear_text()
