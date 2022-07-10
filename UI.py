@@ -13,7 +13,7 @@ class App(tk.Frame):
         self.create_widgets()
         self.first_run = True 
         self.api = API()
-        self.download_destination = 'C:\\'
+        self.download_destination_string = 'C:\\'
     
     def create_widgets(self):
         url = tk.Entry(self, font = ('Courier New', 12), width = 50)
@@ -29,7 +29,8 @@ class App(tk.Frame):
         self.clone_button.grid(row = 0, column = 4)
     
     def download_destination(self):
-        self.download_destination = filedialog.askopenfilename()
+        self.download_destination_string = filedialog.askdirectory()
+        print(self.download_destination_string)
     
     def clone(self):
         if self.first_run == True:
