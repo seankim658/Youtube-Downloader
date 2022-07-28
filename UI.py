@@ -11,6 +11,7 @@ class App(tk.Frame):
         super(App, self).__init__()
         self.main_widgets = []
         self.result_widgets = []
+        self.widget_row = 1
         self.grid()
         self.create_widgets()
         self.first_run = True 
@@ -34,9 +35,12 @@ class App(tk.Frame):
         # set download destination 
         self.download_destination_button = tk.Button(self, text = 'Download Destination', command = lambda : self.download_destination())
         self.download_destination_button.grid(row = 0, column = 3)
+        # clear results button 
+        self.clear_results_button = tk.Button(self, text = 'Clear', command = lambda : self.clear_results())
+        self.clear_results_button.grid(row = 0, column = 4)
         # add download button 
-        self.clone_button = tk.Button(self, text='Add Download', command = lambda : self.clone())
-        self.clone_button.grid(row = 0, column = 4)
+        self.clone_button = tk.Button(self, text = 'Add Download', command = lambda : self.clone())
+        self.clone_button.grid(row = 0, column = 5)
     
     def download_destination(self):
         ''' Set the download destination 
@@ -49,15 +53,16 @@ class App(tk.Frame):
         '''
         if self.first_run == True:
             # if adding a second entry bar create a remove button 
-            self.remove_button = tk.Button(self, text = 'Remove Download', command = lambda : self.remove())
-            self.remove_button.grid(row = 0, column = 5)
+            self.remove_button = tk.Button(self, text = 'Remove Download', command = lambda : self.remove_entry())
+            self.remove_button.grid(row = 0, column = 6)
             self.first_run = False
         # create the new entry bar 
         widget = tk.Entry(self, font = ('Courier New', 12), width = 50)
-        widget.grid(row = len(self.main_widgets), column = 0)
+        widget.grid(row = self.widget_row, column = 0)
+        self.widget_row += 1
         self.main_widgets.append(widget)
     
-    def remove(self):
+    def remove_entry(self):
         ''' Remove excess download entries 
         '''
         if len(self.main_widgets) == 2:
@@ -66,6 +71,7 @@ class App(tk.Frame):
         if len(self.main_widgets) >= 1:
             widget = self.main_widgets.pop(len(self.main_widgets) - 1)
             widget.destroy()
+            self.widget_row -= 1
 
     def download(self, mode):
         videos = []
@@ -78,12 +84,21 @@ class App(tk.Frame):
     def show_results(self, current_vid):
         if current_vid[0] == 0:
             result = tk.Label(self, text = f'Found video: {current_vid[1].title}')
-            result.grid()
+            result.grid(row = self.widget_row, column = 0)
+            self.widget_row += 1
             self.result_widgets.append(result)
         else:
             result = tk.Label(self, text = f'Could not find video: {current_vid[1]}')
-            result.grid()
+            result.grid(row = self.widget_row, column = 0)
+            self.widget_row += 1
             self.result_widgets.append(result) 
+
+    def clear_results(self):
+        ''' Clear the result labels and progress bars 
+        '''
+        for widget in self.result_widgets:
+            widget.destroy()
+        self.result_widgets = []
 
     def clear_text(self):
         ''' Clear the entry bars 
