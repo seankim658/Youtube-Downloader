@@ -79,6 +79,7 @@ class App(tk.Frame):
             url = widget.get()
             current_vid = self.api.get_video(url)
             self.show_results(current_vid)
+            self.api.download(current_vid, mode)
         self.clear_text()
     
     def show_results(self, current_vid):
