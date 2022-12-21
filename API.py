@@ -18,17 +18,29 @@ class API():
     def download(self, video, mode, download_path):
         print('downloading ' + mode)
         streams = video[1].streams
-        print('-----------STREAMS-----------')
-        print(streams)
-        vid_streams = streams.filter(only_video = True, file_extension = 'mp4')
+        # print('-----------STREAMS-----------')
+        # print(streams)
+        vid_streams = streams.filter(only_video = True)
         audio_streams = streams.filter(only_audio = True)
         if mode == 'video':
             print('----------VID-----------')
-            print(vid_streams)
+            vid_streams = vid_streams.filter(progressive = False)
+            print(vid_streams.first())
+            try:
+                vid_streams.first().download(download_path)
+            except:
+                print("Error downloading video")
+            print('Download complete')
+            print(f'Download Path: {download_path}') 
+            print(f'Resolution: {vid_streams.first().resolution}')
+            print(f'Type: {vid_streams.first().mime_type}')
+            print(f'Codec: {vid_streams.first().video_codec}')
+            print(f'File Size (GBs): {vid_streams.first().filesize / 1_000_000_000}')
 
-        elif mode == 'audio':
-            print('----------AUDIO-----------')
-            print(audio_streams)
+        # complete audio regardless of mode 
+        print('----------AUDIO-----------')
+        print(audio_streams)
+        
 
 '''
 [<Stream: itag="17" mime_type="video/3gpp" res="144p" fps="6fps" vcodec="mp4v.20.3" acodec="mp4a.40.2" progressive="True" type="video">, 

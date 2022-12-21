@@ -11,14 +11,15 @@ class App(tk.Frame):
         super(App, self).__init__()
         self.main_widgets = []
         self.result_widgets = []
+        self.download_widgets = []
         self.widget_row = 1
         self.grid()
         self.create_widgets()
         self.first_run = True 
         self.api = API()
         # default download location is main drive root folder 
-        self.download_destination_string = 'C:\\'
-    
+        self.download_destination_string = None 
+
     def create_widgets(self):
         ''' Creates the home screen widgets 
         '''
