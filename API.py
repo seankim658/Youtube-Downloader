@@ -16,31 +16,40 @@ class API():
         return (0, video)
     
     def download(self, video, mode, download_path):
-        print('downloading ' + mode)
+        print(f'\n---------- Downloading {mode.upper()} ----------')
+        print(f'Download Path: {download_path}')
         streams = video[1].streams
-        # print('-----------STREAMS-----------')
-        # print(streams)
         vid_streams = streams.filter(only_video = True)
         audio_streams = streams.filter(only_audio = True)
         if mode == 'video':
-            print('----------VID-----------')
+            print(f'--- VID: {vid_streams.first().title} ---')
             vid_streams = vid_streams.filter(progressive = False)
             print(vid_streams.first())
             try:
-                vid_streams.first().download(download_path)
+                vid_streams.first().download(output_path = download_path)
             except:
-                print("Error downloading video")
+                print('Error downloading video')
             print('Download complete')
-            print(f'Download Path: {download_path}') 
             print(f'Resolution: {vid_streams.first().resolution}')
-            print(f'Type: {vid_streams.first().mime_type}')
+            vfile_type = vid_streams.first().mime_type.split('/')[1]
+            print(f'Type: {vfile_type}')
             print(f'Codec: {vid_streams.first().video_codec}')
             print(f'File Size (GBs): {vid_streams.first().filesize / 1_000_000_000}')
 
-        # complete audio regardless of mode 
-        print('----------AUDIO-----------')
-        print(audio_streams)
-        
+        # download audio regardless of mode 
+        audio_streams = audio_streams.filter(file_extension = vfile_type)
+        print(f'--- AUDIO: {audio_streams.first().title} ---')
+        print(audio_streams.first())
+        try:
+            audio_streams.first().download(output_path = download_path, filename_prefix = 'Aud-')
+        except:
+            print('Error downloading audio')
+        print('Audio download complete')
+        print(f'ABR: {audio_streams.first().abr}')
+        afile_type = audio_streams.first().mime_type.split('/')[1]
+        print(f'Type: {afile_type}')
+        print(f'Codec: {audio_streams.first().audio_codec}')
+        print(f'File Size (GBs): {audio_streams.first().filesize / 1_000_000_000}')
 
 '''
 [<Stream: itag="17" mime_type="video/3gpp" res="144p" fps="6fps" vcodec="mp4v.20.3" acodec="mp4a.40.2" progressive="True" type="video">, 
